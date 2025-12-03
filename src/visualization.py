@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
+import numpy as np
 
 def plot_column_distribution(df, col):
     """
@@ -22,4 +24,54 @@ def plot_column_distribution(df, col):
     axes[1].set_xlabel(col)
     
     plt.tight_layout()
+    plt.show()
+
+def plot_correlation_heatmap(df, title="Correlation Matrix (Numerical Columns)"):
+    """
+    Vẽ heatmap tương quan cho các cột số.
+    """
+    numeric_df = df.select_dtypes(include=[np.number])
+    if numeric_df.empty:
+        print("No numerical columns found for correlation.")
+        return
+
+    plt.figure(figsize=(10, 8))
+    mask = np.triu(np.ones_like(numeric_df.corr(), dtype=bool)) # Che một nửa trên để đỡ rối
+    sns.heatmap(numeric_df.corr(), mask=mask, annot=True, fmt=".2f", cmap='coolwarm', linewidths=0.5)
+    plt.title(title, fontsize=14, fontweight='bold')
+    plt.show()
+
+def plot_categorical_vs_numerical_box(df, cat_col, num_col, order=None, title=None):
+    """
+    Vẽ Boxplot để xem phân phối của biến số theo nhóm phân loại.
+    Rất quan trọng để xem Salary biến động thế nào theo Experience, Company Size...
+    """
+    plt.figure(figsize=(12, 6))
+    sns.boxplot(data=df, x=cat_col, y=num_col, order=order, hue=cat_col, palette='viridis', showfliers=False, legend=False) # showfliers=False để ẩn outliers quá xa cho hình gọn
+    sns.stripplot(data=df, x=cat_col, y=num_col, order=order, color='black', alpha=0.3, size=3) # Hiện thêm các điểm dữ liệu mờ
+    
+    if title:
+        plt.title(title, fontsize=14, fontweight='bold')
+    else:
+        plt.title(f'Relationship between {cat_col} and {num_col}', fontsize=14, fontweight='bold')
+    
+    plt.ylabel(num_col)
+    plt.xlabel(cat_col)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.show()
+
+def plot_categorical_heatmap(df, col1, col2, title=None):
+    """
+    Vẽ Heatmap tần suất xuất hiện giữa 2 biến phân loại (Crosstab).
+    VD: Experience Level vs Company Size.
+    """
+    crosstab = pd.crosstab(df[col1], df[col2])
+    
+    plt.figure(figsize=(10, 6))
+    sns.heatmap(crosstab, annot=True, fmt='d', cmap='YlGnBu')
+    
+    if title:
+        plt.title(title, fontsize=14, fontweight='bold')
+    else:
+        plt.title(f'Heatmap: {col1} vs {col2}', fontsize=14, fontweight='bold')
     plt.show()
