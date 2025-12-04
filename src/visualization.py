@@ -26,6 +26,30 @@ def plot_column_distribution(df, col):
     plt.tight_layout()
     plt.show()
 
+def plot_bar_count(df, column_name, top_n=None):
+    """
+    Vẽ biểu đồ thanh thể hiện tần suất xuất hiện của các giá trị trong cột phân loại.
+
+    Tham số:
+        df: DataFrame dữ liệu
+        column_name: tên cột cần trực quan hóa
+        top_n: nếu muốn chỉ hiển thị top N giá trị phổ biến nhất (thường dùng cho cột nhiều nhãn)
+    """
+    value_counts = df[column_name].value_counts()
+
+    # Nếu cột có quá nhiều giá trị → cho phép chỉ lấy top_n
+    if top_n is not None:
+        value_counts = value_counts.head(top_n)
+
+    plt.figure(figsize=(10, 5))
+    sns.barplot(x=value_counts.index, y=value_counts.values)
+    plt.title(f"Tần suất xuất hiện của cột: {column_name}")
+    plt.xlabel("Giá trị")
+    plt.ylabel("Số lượng")
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.show()
+
 def plot_correlation_heatmap(df, title="Correlation Matrix (Numerical Columns)"):
     """
     Vẽ heatmap tương quan cho các cột số.
