@@ -5,22 +5,22 @@ import numpy as np
 
 def plot_column_distribution(df, col):
     """
-    Plots histogram with KDE and boxplot for a single numerical column.
+    Vẽ biểu đồ histogram với KDE và boxplot cho một cột số.
     """
-    # Set style
+    # Thiết lập phong cách
     sns.set_style("whitegrid")
     
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
     # 1. Histogram + KDE
     sns.histplot(data=df, x=col, kde=True, ax=axes[0], color='skyblue')
-    axes[0].set_title(f'Distribution of {col}')
+    axes[0].set_title(f'Phân phối của {col}')
     axes[0].set_xlabel(col)
-    axes[0].set_ylabel('Frequency')
+    axes[0].set_ylabel('Tần suất')
     
     # 2. Boxplot
     sns.boxplot(x=df[col], ax=axes[1], color='lightgreen')
-    axes[1].set_title(f'Boxplot of {col}')
+    axes[1].set_title(f'Biểu đồ hộp của {col}')
     axes[1].set_xlabel(col)
     
     plt.tight_layout()
@@ -56,7 +56,7 @@ def plot_correlation_heatmap(df, title="Correlation Matrix (Numerical Columns)")
     """
     numeric_df = df.select_dtypes(include=[np.number])
     if numeric_df.empty:
-        print("No numerical columns found for correlation.")
+        print("Không tìm thấy cột số nào để tính tương quan.")
         return
 
     plt.figure(figsize=(10, 8))
