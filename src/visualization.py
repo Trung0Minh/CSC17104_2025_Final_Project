@@ -26,7 +26,7 @@ def plot_column_distribution(df, col):
     plt.tight_layout()
     plt.show()
 
-def plot_bar_count(df, column_name, top_n=None):
+def plot_bar_count(df, column_name, top_n=None, title=None):
     """
     Vẽ biểu đồ thanh thể hiện tần suất xuất hiện của các giá trị trong cột phân loại.
 
