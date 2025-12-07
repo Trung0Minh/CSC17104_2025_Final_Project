@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
+import plotly.express as px
+
 
 def plot_column_distribution(df, col):
     """
@@ -25,6 +28,7 @@ def plot_column_distribution(df, col):
     
     plt.tight_layout()
     plt.show()
+
 
 def plot_bar_count(df, column_name, top_n=None, title=None):
     """
@@ -50,6 +54,7 @@ def plot_bar_count(df, column_name, top_n=None, title=None):
     plt.tight_layout()
     plt.show()
 
+
 def plot_correlation_heatmap(df, title="Correlation Matrix (Numerical Columns)"):
     """
     Vẽ heatmap tương quan cho các cột số.
@@ -64,6 +69,7 @@ def plot_correlation_heatmap(df, title="Correlation Matrix (Numerical Columns)")
     sns.heatmap(numeric_df.corr(), mask=mask, annot=True, fmt=".2f", cmap='coolwarm', linewidths=0.5)
     plt.title(title, fontsize=14, fontweight='bold')
     plt.show()
+
 
 def plot_categorical_vs_numerical_box(df, cat_col, num_col, order=None, title=None):
     """
@@ -84,6 +90,7 @@ def plot_categorical_vs_numerical_box(df, cat_col, num_col, order=None, title=No
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.show()
 
+
 def plot_categorical_heatmap(df, col1, col2, title=None):
     """
     Vẽ Heatmap tần suất xuất hiện giữa 2 biến phân loại (Crosstab).
@@ -99,3 +106,30 @@ def plot_categorical_heatmap(df, col1, col2, title=None):
     else:
         plt.title(f'Heatmap: {col1} vs {col2}', fontsize=14, fontweight='bold')
     plt.show()
+
+
+def plot_side_by_side_bar(df, col1, col2, top_n=10, title="Comparison"):
+    """
+    Vẽ 2 biểu đồ cột cạnh nhau để so sánh phân phối (VD: Nơi ở nhân viên vs Vị trí công ty)
+    """
+    count1 = df[col1].value_counts().head(top_n)
+    count2 = df[col2].value_counts().head(top_n)
+
+    fig = go.Figure(data=[
+        go.Bar(name='Employee Residence', x=count1.index, y=count1.values, marker_color='indianred'),
+        go.Bar(name='Company Location', x=count2.index, y=count2.values, marker_color='lightsalmon')
+    ])
+
+    fig.update_layout(barmode='group', title=title, xaxis_tickangle=-45)
+    fig.show()
+
+def plot_treemap(df, col, title="Distribution"):
+    """
+    Vẽ Treemap cho biến phân loại
+    """
+    temp_df = df[col].value_counts().reset_index()
+    temp_df.columns = [col, 'Count']
+    
+    fig = px.treemap(temp_df, path=[col], values='Count',
+                     title=title, color='Count', color_continuous_scale='RdBu')
+    fig.show()

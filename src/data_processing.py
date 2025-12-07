@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import country_converter as coco
+
 
 def load_data(filepath):
     """Loads the dataset from the specified filepath."""
@@ -10,6 +12,7 @@ def load_data(filepath):
     except FileNotFoundError:
         print(f"Error: File not found at {filepath}")
         return None
+
 
 def get_dataset_overview(df):
     """Returns basic overview statistics of the dataset."""
@@ -25,15 +28,18 @@ def get_dataset_overview(df):
     
     return df.head()
 
+
 def get_column_info(df):
     """Prints information about columns including data types and non-null counts."""
     print("\nColumn Information:")
     print(df.info())
     return df.dtypes
 
+
 def get_numerical_columns(df):
     """Returns a list of numerical column names."""
     return df.select_dtypes(include=[np.number]).columns.tolist()
+
 
 def analyze_numerical_column_metrics(df, col):
     """
@@ -89,3 +95,58 @@ def analyze_numerical_column_metrics(df, col):
         print(f"   - Unique Values ({len(unique_values)}): {unique_values}")
     
     print("-" * 40)
+
+
+def assign_job_category(job_title):
+    """
+    Gom nhóm các chức danh công việc thành 6 nhóm chính.
+    """
+    job_title = str(job_title).lower()
+    if any(x in job_title for x in ['manager', 'head', 'lead', 'director', 'principal', 'vp', 'chief']):
+        return 'Manager/Lead'
+    elif any(x in job_title for x in ['scientist', 'researcher']):
+        return 'Data Scientist'
+    elif any(x in job_title for x in ['engineer', 'architect']):
+        return 'Data Engineer'
+    elif 'analyst' in job_title:
+        return 'Data Analyst'
+    elif any(x in job_title for x in ['machine learning', 'ml', 'ai', 'computer vision', 'nlp']):
+        return 'ML/AI Engineer'
+    else:
+        return 'Other'
+
+
+def clean_data_pipeline(df):
+    """
+    Pipeline thực hiện các bước làm sạch cơ bản.
+    """
+    # 1. Tạo cột job_category
+    df['job_category'] = df['job_title'].apply(assign_job_category)
+    
+    # 2. Mapping các giá trị viết tắt
+    df['experience_level'] = df['experience_level'].replace({
+        'SE': 'Senior Level',
+        'EN': 'Entry Level',
+        'EX': 'Executive Level',
+        'MI': 'Mid Level'
+    })
+    
+    df['employment_type'] = df['employment_type'].replace({
+        'FL': 'Freelance',
+        'CT': 'Contractor',
+        'FT': 'Full-time',
+        'PT': 'Part-time'
+    })
+    
+    df['company_size'] = df['company_size'].replace({
+        'S': 'Small',
+        'M': 'Medium',
+        'L': 'Large'
+    })
+
+    # 3. Chuẩn hóa cột company_location và employee_residence sang tên quốc gia đầy đủ (ISO 3166 -> tên quốc gia)
+    cc = coco.CountryConverter()
+    df['company_location'] = cc.convert(names=df['company_location'], to='name_short')
+    df['employee_residence'] = cc.convert(names=df['employee_residence'], to='name_short')
+    
+    return df
