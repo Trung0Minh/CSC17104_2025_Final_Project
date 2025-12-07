@@ -71,7 +71,4 @@ def analyze_numerical_column_metrics(df, col):
     
     print(f"\n[3] Chất lượng dữ liệu:")
     print(f"   - Giá trị bị thiếu: {missing_count} ({missing_count/total_rows*100:.2f}%)")
-    if len(unique_values) <= 10:
-        print(f"   - Các giá trị duy nhất ({len(unique_values)}): {unique_values}")
-    
     print("-" * 40)
