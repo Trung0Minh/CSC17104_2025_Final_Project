@@ -8,5 +8,4 @@ country_converter
 pycountry
 plotly
 nbformat>=4.2.0
-wordcloud
 scipy
