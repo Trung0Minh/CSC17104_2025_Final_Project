@@ -75,3 +75,26 @@ def analyze_numerical_column_metrics(df, col):
         print(f"   - Các giá trị duy nhất ({len(unique_values)}): {unique_values}")
     
     print("-" * 40)
+
+def analyze_categorical_column(df, col_name, top_n=15):
+    """
+    Phân tích một cột phân loại:
+    1. In số lượng giá trị khác nhau
+    2. In value counts
+    
+    Tham số:
+        df: DataFrame
+        col_name: tên cột phân loại
+        top_n: số lượng nhãn hiển thị trên biểu đồ nếu nhiều nhãn (>20)
+    """
+    print("="*50)
+    print(f"Phân tích cột: {col_name}")
+    
+    # 1. Số lượng giá trị khác nhau
+    n_unique = df[col_name].nunique()
+    print(f"Số lượng giá trị khác nhau: {n_unique}\n")
+    
+    # 2. Value counts
+    print("Value counts:")
+    print(df[col_name].value_counts(), "\n")
+    
