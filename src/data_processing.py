@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import country_converter as coco
+from sklearn.preprocessing import LabelEncoder
 
 
 def load_data(filepath):
@@ -97,7 +98,7 @@ def analyze_numerical_column_metrics(df, col):
     print("-" * 40)
 
 
-def assign_job_category(job_title):
+def group_job_title(job_title):
     """
     Gom nhóm các chức danh công việc thành 6 nhóm chính.
     """
@@ -121,7 +122,7 @@ def clean_data_pipeline(df):
     Pipeline thực hiện các bước làm sạch cơ bản.
     """
     # 1. Tạo cột job_category
-    df['job_category'] = df['job_title'].apply(assign_job_category)
+    df['job_category'] = df['job_title'].apply(group_job_title)
     
     # 2. Mapping các giá trị viết tắt
     df['experience_level'] = df['experience_level'].replace({
@@ -150,3 +151,111 @@ def clean_data_pipeline(df):
     df['employee_residence'] = cc.convert(names=df['employee_residence'], to='name_short')
     
     return df
+
+
+def adjust_salary_inflation(df):
+    # Tỷ lệ lạm phát tham khảo (US CPI)
+    inflation_rates = {2020: 0.0123, 2021: 0.0470, 2022: 0.0650, 2023: 0.0}
+    
+    def calculate_adjusted(row):
+        year = row['work_year']
+        salary = row['salary_in_usd']
+        if year == 2023: return salary
+        
+        # Tính gộp lạm phát
+        adjusted = salary
+        for y in range(year, 2023):
+            adjusted *= (1 + inflation_rates.get(y, 0))
+        return adjusted
+
+    df['adjusted_salary'] = df.apply(calculate_adjusted, axis=1)
+    return df
+
+def group_location(country):
+    # 1. Nhóm Mỹ (Dominant)
+    if country in ['United States', 'US']:
+        return 'US'
+    
+    # 2. Nhóm các nước phát triển (Tier 2) 
+    # Canada, UK, Đức, Pháp, Úc, Sing, Ireland...
+    elif country in ['Canada', 'United Kingdom', 'Germany', 'France', 'Australia', 
+                     'Netherlands', 'Ireland', 'Singapore', 'Sweden', 'Japan']:
+        return 'Other_Developed'
+    
+    # 3. Nhóm còn lại (India, Brazil, Spain, và các nước mẫu ít lương cao như Israel...)
+    else:
+        return 'Rest_of_World'
+    
+def prepare_data_for_model(df):
+    """
+    Chuẩn bị dữ liệu cho Model:
+    1. Chọn các features quan trọng.
+    2. Loại bỏ outliers (nếu cần thiết, ở đây ta giữ lại để model học được cả lương cao).
+    3. Mã hóa dữ liệu (Encoding).
+    """
+    # 1. Chọn features
+    features = ['experience_level', 'employment_type', 'job_category', 
+                'employee_residence', 'remote_ratio', 'company_location', 'company_size']
+    
+    # SỬ DỤNG 'adjusted_salary' LÀM TARGET
+    target = 'adjusted_salary'
+    
+    df_model = df[features + [target]].copy()
+    
+    # 2. Encoding
+    label_encoders = {}
+    for col in features:
+        if df_model[col].dtype == 'object' or col == 'remote_ratio': # remote_ratio cũng nên coi là category
+            le = LabelEncoder()
+            df_model[col] = df_model[col].astype(str)
+            df_model[col] = le.fit_transform(df_model[col])
+            label_encoders[col] = le
+            
+    return df_model, label_encoders
+
+def prepare_data_for_model(df):
+    """
+    Chuẩn bị dữ liệu cho Model:
+    1. Xử lý outliers
+    2. Feature Engineering (Gom nhóm Location)
+    3. Chọn features quan trọng
+    4. Mã hóa dữ liệu (Encoding)
+    """
+    df_ml = df.copy()
+    
+    # 1. Xử lý Outliers bằng IQR (Chỉ lọc trên biến mục tiêu adjusted_salary)
+    # Lọc bớt các lương quá cao gây nhiễu
+    Q1 = df_ml['adjusted_salary'].quantile(0.25)
+    Q3 = df_ml['adjusted_salary'].quantile(0.75)
+    IQR = Q3 - Q1
+    upper_bound = Q3 + 1.5 * IQR
+    lower_bound = Q1 - 1.5 * IQR # Thực tế lương ko âm, nhưng cứ giữ công thức chuẩn
+    
+    original_len = len(df_ml)
+    df_ml = df_ml[(df_ml['adjusted_salary'] >= lower_bound) & (df_ml['adjusted_salary'] <= upper_bound)]
+    print(f"Đã loại bỏ {original_len - len(df_ml)} dòng outliers (adjusted_salary > {upper_bound:,.0f})")
+
+    # 2. Feature Engineering: 
+    # 2.1 Gom nhóm Location
+    # Giảm số lượng category từ 70+ xuống còn 3 nhóm để tránh nhiễu
+    df_ml['company_location_group'] = df_ml['company_location'].apply(group_location)
+    df_ml['employee_residence_group'] = df_ml['employee_residence'].apply(group_location)
+    
+    # 3. Chọn features
+    # Bỏ 'work_year' (đã chỉnh lạm phát), bỏ 'company_location' gốc (đã có group)
+    features = ['experience_level', 'employment_type', 'job_category', 
+                'employee_residence_group', 'remote_ratio', 'company_location_group', 'company_size']
+    target = 'adjusted_salary' # SỬ DỤNG 'adjusted_salary' LÀM TARGET
+    
+    df_final = df_ml[features + [target]].copy()
+    
+    # 4. Encoding
+    label_encoders = {}
+    for col in features:    
+        if df_final[col].dtype == 'object' or col == 'remote_ratio': # remote_ratio cũng nên coi là category
+            le = LabelEncoder()
+            df_final[col] = df_final[col].astype(str)
+            df_final[col] = le.fit_transform(df_final[col])
+            label_encoders[col] = le
+            
+    return df_final, label_encoders
