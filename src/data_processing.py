@@ -145,7 +145,7 @@ def clean_data_pipeline(df):
         'L': 'Large'
     })
 
-    # 3. Chuẩn hóa cột company_location và employee_residence sang tên quốc gia đầy đủ (ISO 3166 -> tên quốc gia)
+    # 3. Chuẩn hóa cột company_location và employee_residence sang tên quốc gia đầy đủ (ISO-3 -> tên quốc gia)
     cc = coco.CountryConverter()
     df['company_location'] = cc.convert(names=df['company_location'], to='name_short')
     df['employee_residence'] = cc.convert(names=df['employee_residence'], to='name_short')
@@ -154,21 +154,62 @@ def clean_data_pipeline(df):
 
 
 def adjust_salary_inflation(df):
-    # Tỷ lệ lạm phát tham khảo (US CPI)
-    inflation_rates = {2020: 0.0123, 2021: 0.0470, 2022: 0.0650, 2023: 0.0}
-    
+    """
+    Điều chỉnh lương theo lạm phát về năm 2023.
+    Sử dụng tỉ lệ lạm phát của US và Global từ 2019-2023.
+    1. Nếu currency là USD, dùng tỉ lệ lạm phát US.
+    | Năm  | US Lạm Phát | Global Lạm Phát |
+    | ---- | ----------- | --------------- |
+    | 2020 | 1.23%       | 1.92%           |
+    | 2021 | 4.70%       | 3.50%           |
+    | 2022 | 6.50%       | 8.80%           |
+    | 2023 | 4.14%       | 5.80%           |
+    2. Nếu currency là khác USD, dùng tỉ lệ lạm phát Global.
+    3. Tính lương điều chỉnh = salary_in_usd * (1 + lạm phát năm X+1) * ... * (1 + lạm phát năm 2023)
+    4. Trả về cột mới 'adjusted_salary'
+    """
+    # Tỉ lệ lạm phát hằng năm
+    us_inflation_rate = {
+        2019: 0.0181,      # 1.81%
+        2020: 0.0123,      # 1.23%
+        2021: 0.0470,      # 4.70%
+        2022: 0.0650,      # 6.50%,
+        2023: 0.0414,      # 4.14%
+    }
+
+    global_inflation_rate = {
+        2019: 0.0219,      # 2.19%
+        2020: 0.0192,      # 1.92%
+        2021: 0.0350,      # 3.50%
+        2022: 0.0880,      # 8.80%
+        2023: 0.0580,      # 5.80%
+    }
+
     def calculate_adjusted(row):
         year = row['work_year']
+        currency = row['salary_currency']
         salary = row['salary_in_usd']
-        if year == 2023: return salary
         
-        # Tính gộp lạm phát
-        adjusted = salary
-        for y in range(year, 2023):
-            adjusted *= (1 + inflation_rates.get(y, 0))
+        if year == 2023:
+            return salary
+        
+        cumulative_factor = 1.0
+        
+        if currency == 'USD':
+            inflation_dict = us_inflation_rate
+        else:
+            inflation_dict = global_inflation_rate
+        
+        # Nhân lạm phát từ năm X+1 đến 2023
+        for y in range(year + 1, 2024):
+            cumulative_factor *= (1 + inflation_dict[y])
+        
+        adjusted = salary * cumulative_factor
         return adjusted
 
+
     df['adjusted_salary'] = df.apply(calculate_adjusted, axis=1)
+
     return df
 
 def group_location(country):
