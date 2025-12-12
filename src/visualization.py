@@ -30,27 +30,62 @@ def plot_column_distribution(df, col):
     plt.show()
 
 
-def plot_bar_count(df, column_name, top_n=None, title=None):
+def plot_bar_count(df, column_name, top_n=None, sort_by_index=False, title=None, figsize=(10, 6), palette="viridis", annotate=True, horizontal=False):
     """
     Vẽ biểu đồ thanh thể hiện tần suất xuất hiện của các giá trị trong cột phân loại.
 
     Tham số:
         df: DataFrame dữ liệu
         column_name: tên cột cần trực quan hóa
-        top_n: nếu muốn chỉ hiển thị top N giá trị phổ biến nhất (thường dùng cho cột nhiều nhãn)
+        top_n: nếu muốn chỉ hiển thị top N giá trị phổ biến nhất
+        sort_by_index: Sắp xếp theo nhãn (index) thay vì tần suất
+        title: Tiêu đề tùy chỉnh
+        figsize: Kích thước biểu đồ
+        palette: Bảng màu
+        annotate: Hiển thị số lượng trên thanh
+        horizontal: Vẽ biểu đồ ngang (thích hợp cho nhãn dài)
     """
     value_counts = df[column_name].value_counts()
 
-    # Nếu cột có quá nhiều giá trị → cho phép chỉ lấy top_n
     if top_n is not None:
         value_counts = value_counts.head(top_n)
+    
+    if sort_by_index:
+        value_counts = value_counts.sort_index()
 
-    plt.figure(figsize=(10, 5))
-    sns.barplot(x=value_counts.index, y=value_counts.values)
-    plt.title(f"Tần suất xuất hiện của cột: {column_name}")
-    plt.xlabel("Giá trị")
-    plt.ylabel("Số lượng")
-    plt.xticks(rotation=45, ha='right')
+    plt.figure(figsize=figsize)
+    
+    if horizontal:
+        ax = sns.barplot(y=value_counts.index, x=value_counts.values, hue=value_counts.index, palette=palette, legend=False)
+        plt.xlabel("Số lượng")
+        plt.ylabel(column_name)
+    else:
+        ax = sns.barplot(x=value_counts.index, y=value_counts.values, hue=value_counts.index, palette=palette, legend=False)
+        plt.xlabel(column_name)
+        plt.ylabel("Số lượng")
+        plt.xticks(rotation=45, ha='right')
+
+    # Xử lý tiêu đề
+    if title:
+        plt.title(title, fontsize=14, fontweight='bold')
+    else:
+        plt.title(f"Tần suất xuất hiện của cột: {column_name}", fontsize=14, fontweight='bold')
+
+    # Annotate (Hiển thị số liệu trên cột)
+    if annotate:
+        if horizontal:
+            for p in ax.patches:
+                width = p.get_width()
+                if width > 0:
+                    ax.annotate(f'{int(width)}', (width, p.get_y() + p.get_height() / 2),
+                                ha='left', va='center', fontsize=10, xytext=(5, 0), textcoords='offset points')
+        else:
+            for p in ax.patches:
+                height = p.get_height()
+                if height > 0:
+                    ax.annotate(f'{int(height)}', (p.get_x() + p.get_width() / 2, height),
+                                ha='center', va='bottom', fontsize=10, xytext=(0, 5), textcoords='offset points')
+
     plt.tight_layout()
     plt.show()
 
