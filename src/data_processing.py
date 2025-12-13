@@ -87,7 +87,6 @@ def analyze_categorical_column(df, col_name, top_n=15):
         col_name: tên cột phân loại
         top_n: số lượng nhãn hiển thị trên biểu đồ nếu nhiều nhãn (>20)
     """
-    print("="*50)
     print(f"Phân tích cột: {col_name}")
     
     # 1. Số lượng giá trị khác nhau
@@ -131,8 +130,6 @@ def check_currency_rates(df, threshold_pct=5):
     inconsistent = summary[summary["diff_pct"] > threshold_pct]["salary_currency"].tolist()
 
     print("\n=== Currencies with inconsistent exchange rates (> {}%) ===".format(threshold_pct))
-    print(inconsistent)
-
     return summary, inconsistent
 
 def check_job_title_anomalies(df, col="job_title"):
