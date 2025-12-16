@@ -5,7 +5,7 @@
 
 ---
 
-## 👥 Nhóm Thực hiện
+## Nhóm Thực hiện
 **Giảng viên hướng dẫn:** Phạm Trọng Nghĩa - Lê Nhựt Nam - Nguyễn Thanh Tình
 
 **Thành viên:**
@@ -32,7 +32,7 @@ Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để t�
 
 ---
 
-## ❓ Câu hỏi Nghiên cứu & Phát hiện Chính
+## Câu hỏi Nghiên cứu & Phát hiện Chính
 
 ### 1. Làm Quản lý (Manager) hay Chuyên gia Kỹ thuật (Technical Expert): Hướng nào lương cao hơn?
 - **Phát hiện:** Chuyển sang làm Quản lý **không đảm bảo** lương cao hơn ngay lập tức.
