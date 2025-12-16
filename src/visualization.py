@@ -23,6 +23,14 @@ def plot_column_distribution(df, col):
     
     # 2. Boxplot
     sns.boxplot(x=df[col], ax=axes[1], color='lightgreen')
+
+    # Add mean and median lines with legend
+    mean_val = df[col].mean()
+    median_val = df[col].median()
+    axes[1].axvline(mean_val, color='red', linestyle='--', linewidth=2, label=f'Mean: {mean_val:.2f}')
+    axes[1].axvline(median_val, color='blue', linestyle='-', linewidth=2, label=f'Median: {median_val:.2f}')
+    axes[1].legend()
+
     axes[1].set_title(f'Boxplot of {col}')
     axes[1].set_xlabel(col)
     
