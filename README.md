@@ -1,11 +1,11 @@
-# Phân tích Lương ngành Khoa học Dữ liệu 2023 (Data Science Salaries 2023)
+# Data Science Salaries 2023
 
 **CSC17104 – LẬP TRÌNH KHOA HỌC DỮ LIỆU**  
 **Đồ án Cuối kỳ**
 
 ---
 
-## Nhóm Thực hiện
+## Nhóm thực hiện
 **Giảng viên hướng dẫn:** Phạm Trọng Nghĩa - Lê Nhựt Nam - Nguyễn Thanh Tình
 
 **Thành viên:**
@@ -15,10 +15,10 @@
 
 ---
 
-## 📊 Tổng quan Dự án
-Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để tìm hiểu các xu hướng trong thị trường việc làm khoa học dữ liệu toàn cầu. Chúng tôi điều tra các yếu tố như kinh nghiệm, chức danh công việc, quy mô công ty và vị trí địa lý ảnh hưởng như thế nào đến mức lương. Dự án cũng áp dụng các mô hình Học máy (Machine Learning) để dự đoán mức lương dựa trên các thuộc tính này.
+## 📊 Tổng quan dự án
+Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để tìm hiểu các xu hướng trong thị trường việc làm khoa học dữ liệu toàn cầu. Nhóm em điều tra các yếu tố như kinh nghiệm, chức danh công việc, quy mô công ty và vị trí địa lý ảnh hưởng như thế nào đến mức lương. Dự án cũng áp dụng các mô hình Học máy để dự đoán mức lương dựa trên các thuộc tính này.
 
-### Dữ liệu (Dataset)
+### Dữ liệu
 - **Nguồn:** [Kaggle - Data Science Salaries 2023](https://www.kaggle.com/datasets/arnabchaki/data-science-salaries-2023/data)
 - **Mô tả:** Bộ dữ liệu chứa thông tin lương của các vị trí Khoa học Dữ liệu từ năm 2020 đến 2023.
 - **Các đặc trưng chính:**
@@ -32,40 +32,39 @@ Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để t�
 
 ---
 
-## Câu hỏi Nghiên cứu & Phát hiện Chính
+## ❓ Câu hỏi nghiên cứu
 
-### 1. Làm Quản lý (Manager) hay Chuyên gia Kỹ thuật (Technical Expert): Hướng nào lương cao hơn?
-- **Phát hiện:** Chuyển sang làm Quản lý **không đảm bảo** lương cao hơn ngay lập tức.
-- **Chi tiết:** Ở cấp độ **Senior**, các Chuyên gia Kỹ thuật có mức lương trung vị cao hơn (**$164k**) so với Quản lý ($156k). Nhóm Quản lý chỉ vượt lên ở cấp độ **Executive** ($182k so với $167k). Các trường hợp lương "khủng" (>$400k) xuất hiện ở cả hai hướng, chứng tỏ kỹ năng kỹ thuật chuyên sâu được đánh giá cao ngang ngửa kỹ năng lãnh đạo.
+### 1. Theo đuổi Manager hay trở thành Technical Expert?
+Tại các cấp độ thâm niên cao (Senior & Executive), liệu việc chuyển hướng sang con đường Quản lý (*ví dụ: Manager, Head, Director*) có thực sự đảm bảo mức thu nhập cao hơn so với việc tiếp tục phát triển chuyên sâu theo con đường Kỹ thuật (*ví dụ: Principal, Staff, Architect*) hay không?
 
-### 2. Tại sao công ty quy mô Vừa (Medium) lại trả lương cao hơn công ty Lớn (Large)?
-- **Phát hiện:** Đây là một ví dụ điển hình của **Nghịch lý Simpson** gây ra bởi yếu tố địa lý.
-- **Chi tiết:** Các công ty Lớn có vẻ trả lương thấp hơn (trung vị toàn cầu $100k) vì họ tuyển dụng tỷ lệ nhân sự lớn ở các thị trường quốc tế/chi phí thấp (46% Non-US). Khi chỉ xét riêng tại **Mỹ**, khoảng cách này gần như biến mất (Medium: $147k so với Large: $142k).
+### 2. Tại sao công ty Vừa lại trả lương cao hơn công ty Lớn?
+Liệu mức chênh lệch này có thực sự phản ánh chế độ đãi ngộ tốt hơn của công ty Vừa, hay nó chỉ là một ảo ảnh thống kê (Simpson's Paradox) gây ra bởi sự khác biệt trong **phân bố địa lý**?
 
-### 3. Mức lương tăng trưởng như thế nào theo kinh nghiệm?
-- **Phát hiện:** Tốc độ tăng lương tuân theo **Quy luật Lợi suất giảm dần (Diminishing Returns)**.
-- **Chi tiết:** Tốc độ tăng trưởng cao nhất là từ **Entry lên Mid-level (~14%/năm)**. Tốc độ này chậm lại từ Mid lên Senior (~10.6%) và giảm sâu từ Senior lên Executive (~7%).
+### 3. Mức lương tăng như thế nào qua từng giai đoạn kinh nghiệm làm việc (EN $\rightarrow$ MI $\rightarrow$ SE $\rightarrow$ EX)?
+Sự khác biệt về mức lương trung bình giữa các nhóm kinh nghiệm là gì? Mức lương tăng dần như thế nào khi người lao động chuyển từ level thấp lên level cao hơn?
 
-### 4. Quy mô công ty ảnh hưởng thế nào đến cơ cấu nhân sự?
-- **Phát hiện:** Mỗi quy mô công ty có "DNA tuyển dụng" riêng biệt.
-- **Chi tiết:**
-  - **Công ty Nhỏ:** Cân bằng giữa nhân sự mới (Entry) và trung cấp (Mid-level).
-  - **Công ty Vừa:** Tập trung áp đảo vào nhân sự cấp cao (**Senior level chiếm 66%**).
-  - **Công ty Lớn:** Cơ cấu cân bằng hơn nhưng vẫn thiên về Senior.
+### 4. Quy mô công ty ảnh hưởng như thế nào đến mức độ kinh nghiệm của nhân viên (EN, MI, SE, EX)?
+Phân bố các mức độ kinh nghiệm của nhân viên trong từng nhóm quy mô công ty (S, M, L) như thế nào? Có sự khác biệt về cấu trúc nhân sự theo kinh nghiệm giữa công ty nhỏ, vừa và lớn hay không?
 
-### 5. Những yếu tố nào ảnh hưởng mạnh nhất đến lương?
-- **Phát hiện:** **Vị trí địa lý là Vua (Location is King).**
-- **Chi tiết:** `employee_residence` (Nơi ở nhân viên) là yếu tố quan trọng nhất, chiếm **>55%** sự biến thiên của lương. Tiếp theo là `experience_level` (#2) và `job_title` (#3). Bất ngờ là `remote_ratio` có tác động trực tiếp rất nhỏ đến mức lương.
+### 5. Yếu tố nào ảnh hưởng đến mức lương nhiều nhất?
+Yếu tố nào đóng vai trò quan trọng nhất trong việc quyết định mức lương (`adjusted_salary`) của nhân sự ngành Data Science: Kinh nghiệm (`experience_level`), Vị trí địa lý (`employee_residence`), hay Loại hình công việc (`job_category`)?
 
-### 6. Có thể dự đoán lương bằng Machine Learning không?
-- **Phát hiện:** Có thể, nhưng có giới hạn.
-- **Mô hình:** Random Forest & XGBoost.
-- **Hiệu suất:** **R² Score ~0.44**, **MAE ~$37,000**.
-- **Insight:** Mô hình tốt để xác định xu hướng lương "sàn". Tuy nhiên, khoảng 55% sự biến thiên của lương phụ thuộc vào các "biến ẩn" không có trong dữ liệu (ví dụ: tech stack cụ thể, kỹ năng đàm phán, phân khúc công ty).
+### 6. Có thể xây dựng một mô hình Machine Learning để dự đoán mức lương?
+Có thể xây dựng một mô hình Machine Learning để dự đoán mức lương thực tế (`adjusted_salary`) của một nhân sự dựa trên hồ sơ công việc (Kinh nghiệm, Vị trí, Quy mô công ty...) với độ chính xác bao nhiêu (đo lường bằng $R^2$ và $MAE$)?
 
 ---
 
-## 📂 Cấu trúc Thư mục
+## 🔍 Tóm tắt phát hiện chính 
+Dựa trên quá trình Khám phá Dữ liệu (EDA), nhóm đã rút ra những quan sát cốt lõi:
+
+*   **Sự thống trị của thị trường Mỹ (US):** Dữ liệu bị lệch nghiêm trọng về phía thị trường Mỹ (>50%). Mức lương tại Mỹ cao vượt trội so với phần còn lại của thế giới (thậm chí gấp 2-3 lần so với Châu Âu).
+*   **Phân cực trong mô hình làm việc:** Phần lớn nhân sự làm việc hoàn toàn tại văn phòng (*On-site*) hoặc hoàn toàn từ xa (*Remote 100%*). Mô hình Hybrid (50%) chiếm tỷ lệ rất nhỏ (~7.2%) và có mức lương trung vị thấp nhất.
+*   **Nghịch lý quy mô công ty:** Các công ty quy mô Vừa (*Medium*) lại có mức lương trung vị cao hơn các công ty Lớn (*Large*) trên bình diện tổng thể. Đây có thể là hệ quả của *Nghịch lý Simpson* do phân bố địa lý (công ty lớn tuyển dụng nhiều ở thị trường quốc tế giá rẻ hơn).
+*   **Lương không tăng tuyến tính theo chức danh:** Mặc dù cấp quản lý thường được cho là lương cao hơn, nhưng dữ liệu cho thấy nhiều vị trí Chuyên gia kỹ thuật cấp cao (*Principal/Staff Engineer*) có mức lương ngang ngửa hoặc thậm chí nhỉnh hơn.
+
+---
+
+## 📂 Cấu trúc thư mục
 
 ```
 .
@@ -73,28 +72,27 @@ Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để t�
 │   ├── raw/            # Dữ liệu gốc (ds_salaries.csv)
 │   └── processed/      # Dữ liệu đã qua xử lý
 ├── src/
-│   ├── data_processing.py  # Pipeline làm sạch và xử lý đặc trưng
+│   ├── data_processing.py  # Các hàm làm sạch và xử lý đặc trưng
 │   ├── visualization.py    # Các hàm vẽ biểu đồ
-│   ├── modeling.py         # Định nghĩa mô hình ML (nếu có)
+│   ├── modeling.py         # Định nghĩa mô hình ML
 │   └── __init__.py
-├── DataScienceSalaries2023.ipynb  # Notebook phân tích chính (EDA + Modeling)
-├── tasks.txt           # Danh sách công việc
-├── requirements.txt    # Các thư viện Python cần thiết
-└── README.md           # Tài liệu dự án
+├── DataScienceSalaries2023.ipynb   # Notebook phân tích chính
+├── requirements.txt                # Các thư viện Python cần thiết
+└── README.md                       # Tài liệu dự án
 ```
 
 ---
 
-## 🚀 Hướng dẫn Chạy
+## 🚀 Hướng dẫn chạy
 
 1.  **Clone repository:**
     ```bash
-    git clone <repo-url>
+    git clone https://github.com/Trung0Minh/CSC17104_2025_Final_Project.git
     cd CSC17104_2025_Final_Project
     ```
 
 2.  **Cài đặt thư viện:**
-    Khuyên dùng môi trường ảo (virtual environment).
+    Tạo môi trường ảo sau đó cài đặt thư viện:
     ```bash
     pip install -r requirements.txt
     ```
@@ -107,7 +105,7 @@ Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để t�
 
 ---
 
-## 📦 Thư viện Phụ thuộc
+## 📦 Thư viện hỗ trợ
 
 - **Cốt lõi:** `numpy`, `pandas`
 - **Trực quan hóa:** `matplotlib`, `seaborn`, `plotly`
