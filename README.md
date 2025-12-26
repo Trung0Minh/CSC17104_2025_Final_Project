@@ -16,7 +16,7 @@
 ---
 
 ## 📊 Tổng quan dự án
-Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để tìm hiểu các xu hướng trong thị trường việc làm khoa học dữ liệu toàn cầu. Nhóm em điều tra các yếu tố như kinh nghiệm, chức danh công việc, quy mô công ty và vị trí địa lý ảnh hưởng như thế nào đến mức lương. Dự án cũng áp dụng các mô hình Học máy để dự đoán mức lương dựa trên các thuộc tính này.
+Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để tìm hiểu các xu hướng trong thị trường việc làm khoa học dữ liệu toàn cầu. Nhóm điều tra các yếu tố như kinh nghiệm, chức danh công việc, quy mô công ty và vị trí địa lý ảnh hưởng như thế nào đến mức lương. Dự án cũng áp dụng các mô hình Học máy để dự đoán mức lương dựa trên các thuộc tính này.
 
 ### Dữ liệu
 - **Nguồn:** [Kaggle - Data Science Salaries 2023](https://www.kaggle.com/datasets/arnabchaki/data-science-salaries-2023/data)
