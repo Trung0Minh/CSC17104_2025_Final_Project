@@ -1,0 +1,8 @@
+README File (README.md)
+• Project overview and team info
+• Dataset source and description
+• Research questions list
+• Key findings summary
+• File structure explanation (if multiple notebooks)
+• How to run instructions
+• Dependencies list
