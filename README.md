@@ -74,7 +74,6 @@ Dựa trên quá trình Khám phá Dữ liệu (EDA), nhóm đã rút ra những
 ├── src/
 │   ├── data_processing.py  # Các hàm làm sạch và xử lý đặc trưng
 │   ├── visualization.py    # Các hàm vẽ biểu đồ
-│   ├── modeling.py         # Định nghĩa mô hình ML
 │   └── __init__.py
 ├── DataScienceSalaries2023.ipynb   # Notebook phân tích chính
 ├── requirements.txt                # Các thư viện Python cần thiết
