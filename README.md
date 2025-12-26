@@ -1,7 +1,7 @@
 # Data Science Salaries 2023
 
 **CSC17104 – LẬP TRÌNH KHOA HỌC DỮ LIỆU**  
-**Đồ án Cuối kỳ**
+**Đồ án cuối kỳ**
 
 ---
 

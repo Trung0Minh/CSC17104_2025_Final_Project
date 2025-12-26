@@ -8,30 +8,30 @@ import plotly.express as px
 
 def plot_column_distribution(df, col):
     """
-    Plots histogram with KDE and boxplot for a single numerical column.
+    Vẽ biểu đồ histogram với KDE và boxplot cho một cột số duy nhất.
     """
-    # Set style
+    # Thiết lập style
     sns.set_style("whitegrid")
     
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
-    # 1. Histogram + KDE
+    # 1. Biểu đồ Histogram + KDE
     sns.histplot(data=df, x=col, kde=True, ax=axes[0], color='skyblue')
-    axes[0].set_title(f'Distribution of {col}')
+    axes[0].set_title(f'Phân phối của {col}')
     axes[0].set_xlabel(col)
-    axes[0].set_ylabel('Frequency')
+    axes[0].set_ylabel('Tần suất')
     
-    # 2. Boxplot
+    # 2. Biểu đồ Boxplot
     sns.boxplot(x=df[col], ax=axes[1], color='lightgreen')
 
-    # Add mean and median lines with legend
+    # Thêm đường trung bình và trung vị với chú thích
     mean_val = df[col].mean()
     median_val = df[col].median()
     axes[1].axvline(mean_val, color='red', linestyle='--', linewidth=2, label=f'Mean: {mean_val:.2f}')
     axes[1].axvline(median_val, color='blue', linestyle='-', linewidth=2, label=f'Median: {median_val:.2f}')
     axes[1].legend()
 
-    axes[1].set_title(f'Boxplot of {col}')
+    axes[1].set_title(f'Boxplot của {col}')
     axes[1].set_xlabel(col)
     
     plt.tight_layout()
@@ -41,17 +41,6 @@ def plot_column_distribution(df, col):
 def plot_bar_count(df, column_name, top_n=None, sort_by_index=False, title=None, figsize=(10, 6), palette="viridis", annotate=True, horizontal=False):
     """
     Vẽ biểu đồ thanh thể hiện tần suất xuất hiện của các giá trị trong cột phân loại.
-
-    Tham số:
-        df: DataFrame dữ liệu
-        column_name: tên cột cần trực quan hóa
-        top_n: nếu muốn chỉ hiển thị top N giá trị phổ biến nhất
-        sort_by_index: Sắp xếp theo nhãn (index) thay vì tần suất
-        title: Tiêu đề tùy chỉnh
-        figsize: Kích thước biểu đồ
-        palette: Bảng màu
-        annotate: Hiển thị số lượng trên thanh
-        horizontal: Vẽ biểu đồ ngang (thích hợp cho nhãn dài)
     """
     value_counts = df[column_name].value_counts()
 
@@ -79,7 +68,7 @@ def plot_bar_count(df, column_name, top_n=None, sort_by_index=False, title=None,
     else:
         plt.title(f"Tần suất xuất hiện của cột: {column_name}", fontsize=14, fontweight='bold')
 
-    # Annotate (Hiển thị số liệu trên cột)
+    # Hiển thị số liệu trên cột
     if annotate:
         if horizontal:
             for p in ax.patches:
@@ -137,7 +126,6 @@ def plot_categorical_vs_numerical_box(df, cat_col, num_col, order=None, title=No
 def plot_categorical_heatmap(df, col1, col2, title=None):
     """
     Vẽ Heatmap tần suất xuất hiện giữa 2 biến phân loại (Crosstab).
-    VD: Experience Level vs Company Size.
     """
     crosstab = pd.crosstab(df[col1], df[col2])
     

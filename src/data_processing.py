@@ -1,11 +1,12 @@
 import pandas as pd
-import numpy as np
 import country_converter as coco
 from sklearn.preprocessing import LabelEncoder
 
 
 def load_data(filepath):
-    """Loads the dataset from the specified filepath."""
+    """
+    Tải tập dữ liệu từ đường dẫn tệp được chỉ định.
+    """
     try:
         df = pd.read_csv(filepath)
         print(f"Successfully loaded data from {filepath}")
@@ -14,60 +15,32 @@ def load_data(filepath):
         print(f"Error: File not found at {filepath}")
         return None
 
-
-def get_dataset_overview(df):
-    """Returns basic overview statistics of the dataset."""
-    print("Dataset Overview:")
-    print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
-    print(f"Total size: {df.size} elements")
-    
-    duplicates = df.duplicated().sum()
-    print(f"Duplicate rows: {duplicates}")
-    
-    empty_rows = df.isnull().all(axis=1).sum()
-    print(f"Empty rows: {empty_rows}")
-    
-    return df.head()
-
-
-def get_column_info(df):
-    """Prints information about columns including data types and non-null counts."""
-    print("\nColumn Information:")
-    print(df.info())
-    return df.dtypes
-
-
-def get_numerical_columns(df):
-    """Returns a list of numerical column names."""
-    return df.select_dtypes(include=[np.number]).columns.tolist()
-
-
 def analyze_numerical_column_metrics(df, col):
     """
-    Analyzes a single numerical column based on specific criteria:
-    - Distribution & Central Tendency
-    - Range & Outliers
-    - Data Quality
+    Phân tích một cột số dựa trên các tiêu chí cụ thể:
+    - Phân phối & Xu hướng tập trung
+    - Phạm vi & Giá trị ngoại lai
+    - Chất lượng dữ liệu
     """
-    print(f"--- Metrics for: {col} ---")
+    print(f"--- Số liệu cho cột {col} ---")
     
-    # 1. Distribution & Central Tendency
+    # 1. Phân phối & Xu hướng tập trung
     mean_val = df[col].mean()
     median_val = df[col].median()
     std_dev = df[col].std()
     skewness = df[col].skew()
     
-    print(f"\n[1] Distribution & Central Tendency:")
+    print(f"\n[1] Phân phối & xu hướng:")
     print(f"   - Mean: {mean_val:.2f}")
     print(f"   - Median: {median_val:.2f}")
     print(f"   - Std Dev: {std_dev:.2f}")
     print(f"   - Skewness: {skewness:.2f} (0 = normal, >0 = right-skewed, <0 = left-skewed)")
 
-    # 2. Range & Outliers
+    # 2. Phạm vi & Giá trị ngoại lai
     min_val = df[col].min()
     max_val = df[col].max()
     
-    # IQR Method
+    # IQR
     Q1 = df[col].quantile(0.25)
     Q3 = df[col].quantile(0.75)
     IQR = Q3 - Q1
@@ -77,23 +50,21 @@ def analyze_numerical_column_metrics(df, col):
     outliers = df[(df[col] < lower_bound) | (df[col] > upper_bound)][col]
     num_outliers = outliers.count()
     
-    print(f"\n[2] Range & Outliers:")
+    print(f"\n[2] Phạm vi & giá trị ngoại lai:")
     print(f"   - Min: {min_val}")
     print(f"   - Max: {max_val}")
     print(f"   - IQR: {IQR:.2f} (Q1={Q1:.2f}, Q3={Q3:.2f})")
-    print(f"   - Outlier Boundaries: [{lower_bound:.2f}, {upper_bound:.2f}]")
-    print(f"   - Outlier Count: {num_outliers} ({num_outliers/len(df)*100:.2f}%)")
+    print(f"   - Biên outlier: [{lower_bound:.2f}, {upper_bound:.2f}]")
+    print(f"   - Sô outlier: {num_outliers} ({num_outliers/len(df)*100:.2f}%)")
 
-    # 3. Data Quality
+    # 3. Chất lượng dữ liệu
     missing_count = df[col].isnull().sum()
     total_rows = len(df)
-    # Check for unique values to identify potential impossible values
+    # Kiểm tra các giá trị duy nhất để xác định các giá trị không hợp lệ tiềm ẩn
     unique_values = sorted(df[col].dropna().unique())
     
-    print(f"\n[3] Data Quality:")
-    print(f"   - Missing Values: {missing_count} ({missing_count/total_rows*100:.2f}%)")
-    if len(unique_values) <= 10:
-        print(f"   - Unique Values ({len(unique_values)}): {unique_values}")
+    print(f"\n[3] Chất lượng dữ liệu:")
+    print(f"   - Giá trị bị thiếu: {missing_count} ({missing_count/total_rows*100:.2f}%)")
     
     print("-" * 40)
 
@@ -102,11 +73,6 @@ def analyze_categorical_column(df, col_name, top_n=15):
     Phân tích một cột phân loại:
     1. In số lượng giá trị khác nhau
     2. In value counts
-    
-    Tham số:
-        df: DataFrame
-        col_name: tên cột phân loại
-        top_n: số lượng nhãn hiển thị trên biểu đồ nếu nhiều nhãn (>20)
     """
     print("="*50)
     print(f"Phân tích cột: {col_name}")
@@ -234,6 +200,10 @@ def adjust_salary_inflation(df):
     return df
 
 def group_location(country):
+    """
+    Gom nhóm các quốc gia thành 3 nhóm chính: US, Other_Developed, và Rest_of_World.
+    Dựa trên số lượng mẫu và mức thu nhập để hỗ trợ mô hình dự báo.
+    """
     # 1. Nhóm Mỹ (Dominant)
     if country in ['United States', 'US']:
         return 'US'
@@ -248,32 +218,6 @@ def group_location(country):
     else:
         return 'Rest_of_World'
     
-def prepare_data_for_model(df):
-    """
-    Chuẩn bị dữ liệu cho Model:
-    1. Chọn các features quan trọng.
-    2. Loại bỏ outliers (nếu cần thiết, ở đây ta giữ lại để model học được cả lương cao).
-    3. Mã hóa dữ liệu (Encoding).
-    """
-    # 1. Chọn features
-    features = ['experience_level', 'employment_type', 'job_category', 
-                'employee_residence', 'remote_ratio', 'company_location', 'company_size']
-    
-    # SỬ DỤNG 'adjusted_salary' LÀM TARGET
-    target = 'adjusted_salary'
-    
-    df_model = df[features + [target]].copy()
-    
-    # 2. Encoding
-    label_encoders = {}
-    for col in features:
-        if df_model[col].dtype == 'object' or col == 'remote_ratio': # remote_ratio cũng nên coi là category
-            le = LabelEncoder()
-            df_model[col] = df_model[col].astype(str)
-            df_model[col] = le.fit_transform(df_model[col])
-            label_encoders[col] = le
-            
-    return df_model, label_encoders
 
 def prepare_data_for_model(df):
     """
@@ -360,6 +304,10 @@ def check_currency_rates(df, threshold_pct=5):
     return summary, inconsistent
 
 def check_job_title_anomalies(df, col="job_title"):
+    """
+    Kiểm tra các dấu hiệu bất thường trong cột job_title như ký tự lạ, khoảng trắng thừa, 
+    quá ngắn/dài, hoặc chứa số.
+    """
     titles = df[col].astype(str)
 
     anomalies = pd.DataFrame({"job_title": titles})
@@ -386,7 +334,7 @@ def check_job_title_anomalies(df, col="job_title"):
     # 5. Chứa số
     anomalies["contains_number"] = titles.apply(lambda s: any(ch.isdigit() for ch in s))
 
-    # 6. Lặp từ đơn giản (không dùng regex)
+    # 6. Lặp từ đơn giản
     def has_duplicate_word(s):
         words = s.lower().split()
         for i in range(len(words) - 1):
