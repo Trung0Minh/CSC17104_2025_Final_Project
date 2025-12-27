@@ -5,7 +5,7 @@
 
 ---
 
-## Nhóm thực hiện
+## Nhóm 29
 **Giảng viên hướng dẫn:** Phạm Trọng Nghĩa - Lê Nhựt Nam - Nguyễn Thanh Tình
 
 **Thành viên:**
@@ -16,19 +16,23 @@
 ---
 
 ## 📊 Tổng quan dự án
-Dự án này phân tích bộ dữ liệu "Data Science Salaries 2023" để tìm hiểu các xu hướng trong thị trường việc làm khoa học dữ liệu toàn cầu. Nhóm điều tra các yếu tố như kinh nghiệm, chức danh công việc, quy mô công ty và vị trí địa lý ảnh hưởng như thế nào đến mức lương. Dự án cũng áp dụng các mô hình Học máy để dự đoán mức lương dựa trên các thuộc tính này.
+Dự án này phân tích bộ dữ liệu **Data Science Salaries 2023** để tìm hiểu các xu hướng trong thị trường việc làm khoa học dữ liệu toàn cầu. Nhóm điều tra các yếu tố như kinh nghiệm, chức danh công việc, quy mô công ty và vị trí địa lý ảnh hưởng như thế nào đến mức lương. Dự án cũng áp dụng các mô hình Học máy để dự đoán mức lương dựa trên các thuộc tính này.
 
 ### Dữ liệu
 - **Nguồn:** [Kaggle - Data Science Salaries 2023](https://www.kaggle.com/datasets/arnabchaki/data-science-salaries-2023/data)
 - **Mô tả:** Bộ dữ liệu chứa thông tin lương của các vị trí Khoa học Dữ liệu từ năm 2020 đến 2023.
 - **Các đặc trưng chính:**
-  - `work_year`: Năm trả lương.
-  - `experience_level`: Entry (EN), Mid (MI), Senior (SE), Executive (EX).
-  - `job_title`: Chức danh cụ thể (ví dụ: Data Scientist, ML Engineer).
-  - `salary_in_usd`: Lương quy đổi sang USD.
-  - `employee_residence` & `company_location`: Thông tin địa lý.
-  - `company_size`: Nhỏ (S), Vừa (M), Lớn (L).
-  - `remote_ratio`: 0 (Tại văn phòng), 50 (Lai/Hybrid), 100 (Từ xa/Remote).
+    - `work_year`: Năm trả lương.
+    - `experience_level`: Mức độ kinh nghiệm — Entry (EN), Mid (MI), Senior (SE), Executive (EX).
+    - `employment_type`: Hình thức làm việc — Full-time (FT), Part-time (PT), Contract (CT), Freelance (FL).
+    - `job_title`: Chức danh công việc (ví dụ: Data Scientist, Machine Learning Engineer).
+    - `salary`: Tổng lương gộp theo đơn vị tiền tệ gốc.
+    - `salary_currency`: Đơn vị tiền tệ trả lương (theo chuẩn ISO 4217).
+    - `salary_in_usd`: Lương quy đổi sang USD.
+    - `employee_residence`: Quốc gia cư trú chính của nhân viên.
+    - `company_location`: Quốc gia đặt trụ sở chính của công ty.
+    - `company_size`: Quy mô công ty — Nhỏ (S), Vừa (M), Lớn (L).
+    - `remote_ratio`: Tỷ lệ làm việc từ xa — 0 (Tại văn phòng), 50 (Lai/Hybrid), 100 (Từ xa/Remote).
 
 ---
 
@@ -108,7 +112,7 @@ Dựa trên quá trình Khám phá Dữ liệu (EDA), nhóm đã rút ra những
 
 - **Cốt lõi:** `numpy`, `pandas`
 - **Trực quan hóa:** `matplotlib`, `seaborn`, `plotly`
-- **Machine Learning:** `scikit-learn`, `xgboost`, `category_encoders`
-- **Tiện ích:** `country_converter`, `pycountry`, `tqdm`
+- **Machine Learning:** `scikit-learn`, `xgboost`
+- **Tiện ích:** `country_converter`, `pycountry`
 
 Xem chi tiết phiên bản trong `requirements.txt`.
