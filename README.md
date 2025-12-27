@@ -94,7 +94,8 @@ Dựa trên quá trình Khám phá Dữ liệu (EDA), nhóm đã rút ra những
     cd CSC17104_2025_Final_Project
     ```
 
-2.  **Cài đặt thư viện:**
+2.  **Cài đặt:**
+    Yêu cầu: `python==3.13.7`
     Tạo môi trường ảo sau đó cài đặt thư viện:
     ```bash
     pip install -r requirements.txt
