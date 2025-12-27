@@ -95,11 +95,12 @@ Dựa trên quá trình Khám phá Dữ liệu (EDA), nhóm đã rút ra những
     ```
 
 2.  **Cài đặt:**
-    Yêu cầu: `python==3.13.7`
-    Tạo môi trường ảo sau đó cài đặt thư viện:
-    ```bash
-    pip install -r requirements.txt
-    ```
+    - Yêu cầu: `python==3.13.7`
+
+    - Tạo môi trường ảo sau đó cài đặt thư viện:
+        ```bash
+        pip install -r requirements.txt
+        ```
 
 3.  **Chạy Notebook:**
     Mở `DataScienceSalaries2023.ipynb` bằng Jupyter Notebook hoặc VS Code để xem phân tích và chạy các cell code.
